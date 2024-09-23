@@ -205,7 +205,7 @@ in {
                     Enable WAL mode for SQLite. This is recommended for production environments.
                     https://www.sqlite.org/wal.html
                   '';
-                  example = true;
+                  example = false;
                 };
               };
 
