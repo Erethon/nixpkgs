@@ -6,6 +6,7 @@
   fetchFromGitHub,
   substituteAll,
   python,
+  isPy310,
 
   # build-system
   cython,
@@ -113,6 +114,7 @@ buildPythonPackage rec {
       # don't run benchmarks
       "test_import_time"
     ]
+    ++ lib.optionals isPy310 [ "test_https_proxy_unsupported_tls_in_tls" ]
     ++ lib.optionals stdenv.hostPlatform.is32bit [ "test_cookiejar" ]
     ++ lib.optionals stdenv.hostPlatform.isDarwin [
       "test_addresses" # https://github.com/aio-libs/aiohttp/issues/3572, remove >= v4.0.0
