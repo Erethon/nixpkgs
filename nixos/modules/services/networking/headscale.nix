@@ -168,6 +168,14 @@ in {
                 '';
                 example = "5m";
               };
+
+              server.private_key_path = lib.mkOption {
+                type = lib.types.path;
+                default = "${dataDir}/derp_server_private.key";
+                description = ''
+                  Path to derp private key file, generated automatically if it does not exist.
+                '';
+              };
             };
 
             ephemeral_node_inactivity_timeout = lib.mkOption {
