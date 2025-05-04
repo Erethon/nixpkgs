@@ -15,7 +15,10 @@ let
   '';
 in
 writeScriptBin "send-message" ''
-  #!${(python3.withPackages (ps: [ ps.slixmpp ])).interpreter}
+  #!${
+    (python3.withPackages (ps: [ ps.slixmpp ] ++ ps.slixmpp.optional-dependencies.xep-0363)).interpreter
+  }
+  import asyncio
   import logging
   import sys
   import signal
@@ -75,12 +78,7 @@ writeScriptBin "send-message" ''
       print('ERROR: xmpp-sendmessage timed out')
       sys.exit(1)
 
-  if __name__ == '__main__':
-      signal.signal(signal.SIGALRM, timeout_handler)
-      signal.alarm(120)
-      logging.basicConfig(level=logging.DEBUG,
-                          format='%(levelname)-8s %(message)s')
-
+  async def main():
       ct = CthonTest('cthon98@example.com', 'nothunter2')
       ct.register_plugin('xep_0071')
       ct.register_plugin('xep_0128')
@@ -88,9 +86,17 @@ writeScriptBin "send-message" ''
       ct.register_plugin('xep_0363')
       # MUC
       ct.register_plugin('xep_0045')
-      ct.connect(("${connectTo}", 5222))
-      ct.process(forever=False)
+      await ct.connect(("${connectTo}", 5222))
+      await ct.disconnected
 
       if not ct.test_succeeded:
           sys.exit(1)
+
+  if __name__ == '__main__':
+      signal.signal(signal.SIGALRM, timeout_handler)
+      signal.alarm(120)
+      logging.basicConfig(level=logging.DEBUG,
+                          format='%(levelname)-8s %(message)s')
+
+      asyncio.run(main())
 ''
