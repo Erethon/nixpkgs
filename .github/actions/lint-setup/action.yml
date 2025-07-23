@@ -1,0 +1,36 @@
+name: 'Lint Setup'
+description: 'Common setup steps for Lint jobs'
+inputs:
+  mergedSha:
+    description: 'Merged SHA'
+    required: true
+  targetSha:
+    description: 'Target SHA'
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      with:
+        sparse-checkout: .github/actions
+
+    - name: Check if the PR can be merged and checkout the merge commit
+      if: ${{ inputs.targetSha == '' }}
+      uses: ./.github/actions/get-merge-commit
+      with:
+        mergedSha: ${{ inputs.mergedSha }
+        merged-as-untrusted: true
+
+   - name: Check if the PR can be merged and checkout merged and target commits
+     if: ${{ inputs.targetSha != '' }}
+     uses: ./.github/actions/get-merge-commit
+     with:
+       mergedSha: ${{ inputs.mergedSha }}
+       merged-as-untrusted: true
+       targetSha: ${{ inputs.targetSha }}
+       target-as-trusted: true
+
+   - uses: cachix/install-nix-action@f0fe604f8a612776892427721526b4c7cfb23aba # v31
+     with:
+       extra_nix_config: sandbox = true
