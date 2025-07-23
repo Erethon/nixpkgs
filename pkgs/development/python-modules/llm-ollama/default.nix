@@ -22,7 +22,7 @@
 
 buildPythonPackage rec {
   pname = "llm-ollama";
-  version = "0.12.0";
+      version = "0.12.0";
   pyproject = true;
 
   src = fetchFromGitHub {
