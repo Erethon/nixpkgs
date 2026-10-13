@@ -25,8 +25,6 @@ buildGoModule (finalAttrs: {
 
   subPackages = [
     "pkg/cmd/grafana"
-    "pkg/cmd/grafana-server"
-    "pkg/cmd/grafana-cli"
   ];
 
   src = fetchFromGitHub {
@@ -141,6 +139,7 @@ buildGoModule (finalAttrs: {
   postInstall = ''
     mkdir -p $out/share/grafana
     cp -r public conf $out/share/grafana/
+    find $out/share/grafana/public -type f \( -name "*.ts" -name "*.tsx" \) -delete
   '';
 
   postFixup = ''
