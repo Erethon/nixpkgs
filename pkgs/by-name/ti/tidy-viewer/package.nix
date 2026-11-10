@@ -2,6 +2,8 @@
   lib,
   rustPlatform,
   fetchFromGitHub,
+  pkg-config,
+  zstd,
 }:
 
 rustPlatform.buildRustPackage (finalAttrs: {
@@ -16,6 +18,9 @@ rustPlatform.buildRustPackage (finalAttrs: {
   };
 
   cargoHash = "sha256-HF7M4s2OHCAyVkbCIBxGButAxbxrhjmY3YE/do8et1s=";
+
+  nativeBuildInputs = [ pkg-config ];
+  buildInputs = [ zstd ];
 
   meta = {
     changelog = "https://github.com/alexhallam/tv/blob/${finalAttrs.version}/CHANGELOG.md";
